@@ -1,0 +1,30 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+USE ieee.std_logic_unsigned.all;
+
+ENTITY ASU IS
+	PORT(Cin: IN STD_LOGIC;
+	X,Y : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+	S: OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+	Cout,Overflow :OUT STD_LOGIC);
+END ASU;
+
+ARCHITECTURE Behaviour OF ASU IS
+	SIGNAL sum : STD_LOGIC_VECTOR (4 DOWNTO 0);	
+BEGIN
+	process (Cin,X,Y)
+	begin
+	if (Cin ='0') then
+		sum<= ('0'& X) + ('0' & Y);
+		Overflow<='0';
+	else
+		sum<= ('0'&X)+('0'&not Y);
+		Overflow <='0';
+	end if;
+
+	sum <= ('0' & X)+ ('0' & Y) + Cin;
+	S <= sum(3 DOWNTO 0);
+	Cout<= sum(4);
+	end process;
+END Behaviour;
+
