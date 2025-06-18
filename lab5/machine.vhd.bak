@@ -1,0 +1,74 @@
+LIBRARY ieee;
+USE ieee.std_logic_1164.all;
+ENTITY machine IS
+
+PORT (reset, d_in, Clk : IN STD_LOGIC; 
+		student_id: out std_logic_vector(3 downto 0);
+		current_state : OUT STD_LOGIC_VECTOR (3 downto 0));
+END machine;
+
+ARCHITECTURE fsm OF machine IS
+	type state_type is (s0,s1,s2,s3,s4,s5,s6,s7,s8);
+	signal yfsm: state_type;
+BEGIN
+PROCESS (clk, reset)
+	BEGIN
+		IF reset = '1' THEN yfsm <= s0;
+		ELSIF (clk'EVENT AND clk = '1') THEN
+			CASE yfsm is-- change w fsm type 
+				when s0 =>
+					IF (d_in='1') THEN yfsm<=s8;
+					ELSE yfsm<=s0;
+					END IF;
+				when s8 =>
+					IF (d_in='1') THEN yfsm<=s7;
+					ELSE yfsm<=s8;
+					END IF;
+				when s7 => 
+					IF (d_in='1') THEN yfsm<=s6;
+					ELSE yfsm<=s7;
+					END IF;
+				when s6 => 
+					IF (d_in='1') THEN yfsm<=s5;
+					ELSE yfsm<=s6;
+					END IF;
+				when s5 => 
+					IF (d_in='1') THEN yfsm<=s4;
+					ELSE yfsm<=s5;
+					END IF;
+				when s4 => 
+					IF (d_in='1') THEN yfsm<=s3;
+					ELSE yfsm<=s4;
+					END IF;
+				when s3 => 
+					IF (d_in='1') THEN yfsm<=s2;
+					ELSE yfsm<=s3;
+					END IF;
+				when s2 => 
+					IF (d_in='1') THEN yfsm<=s1;
+					ELSE yfsm<=s2;
+					END IF;
+				when s1 => 
+					IF (d_in='1') THEN yfsm<=s0;
+					ELSE yfsm<=s1;
+					END IF;
+			END CASE;
+		END IF;
+	END PROCESS;
+
+	-- moore
+PROCESS (yfsm, d_in)-- data_in if needed
+	BEGIN
+		CASE yfsm is --change w fsm type 
+				when s0 => student_id <= "0101"; --5
+				when s1 => student_id <= "0000"; --0
+				when s2 => student_id <= "0001"; --1
+				when s3 => student_id <= "0001";--1
+				when s4 => student_id <= "0000";--0
+				when s5 => student_id <= "0101";--5
+				when s6 => student_id <= "0000"; --0
+				when s7 => student_id <= "0111";--7
+				when s8 => student_id <= "0000";--0
+			END CASE;
+	END PROCESS;
+END fsm;
